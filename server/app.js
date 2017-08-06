@@ -6,10 +6,10 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 
-// var config = require('./models/config');
+var config = require('./models/config');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-// mongoose.connect(config.database);
+mongoose.connect(config.database);
 var db = mongoose.connection;
 db.on('error', function (err) {
     console.log(err);
@@ -20,7 +20,6 @@ db.on('connected', function () {
 db.on('disconnected', function () {
     console.log('Database Disconnected');
 });
-loadDatabase();
 
 var index = require('./routes/index');
 var users = require('./routes/users');
