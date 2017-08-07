@@ -48,7 +48,7 @@ function loginUser(userData) {
 }
 
 function addUser(userData) {
-    return axios.post(`${store.getters.getBaseURL}/auth/register`, userData)
+    return axios.post(`${store.getters.getBaseURL}/auth/signup`, userData)
         .then((response) => {
             return response.data;
         })
@@ -61,5 +61,5 @@ export {
     handleError,
     displayMessage,
     loginUser,
-    registerUser
+    addUser
 };

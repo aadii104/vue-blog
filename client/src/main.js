@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/') {
     if (window.localStorage.getItem('user') !== null) {
       router.push({
-        path: 'dashboard/all/all_news'
+        path: '/entry'
       })
     } else {
       next()

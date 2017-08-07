@@ -1,278 +1,67 @@
 <template>
-    <div style="width: 100%; min-height: 100%" id="mainDiv">
-        <el-row :gutter="20" style="margin: 0">
-            <el-col :span="24" style="margin-bottom: 21px">
-                <h1>
-                    <span id="logo-text" style="font-family: 'Signika', sans-serif; font-size: 45px">
-                        News Weaver
-                    </span>
-                </h1>
-            </el-col>
-            <el-col :xs="24" :sm="24" :md="12" :lg="12">
-                <el-row :gutter="20" style="font-family: 'Signika', sans-serif; font-size: 40px">
-                    <el-col :span="24" style="padding: 14px 0">
-                        An RSS Reader for the Web
-                    </el-col>
-                    <el-col :span="24" style="padding: 14px 0">
-                        Made using
-                        <a href="https://expressjs.com" target="_blank" class="slide-line">
-                            Express
-                        </a> and
-                        <a href="https://vuejs.org" target="_blank" class="slide-line">
-                            VueJS
-                        </a>
-                    </el-col>
-                    <el-col :span="24" style="padding: 14px 0">
-                        <a href="https://www.github.com/rud156/news-weaver" target="_blank">
-                            <el-button icon="search">
-                                See On Github
-                            </el-button>
-                        </a>
-                    </el-col>
-                </el-row>
-            </el-col>
-            <el-col :xs="24" :sm="24" :md="12" :lg="12">
-                <el-tabs>
-                    <el-tab-pane label="Login">
-                        <el-form label-width="120px" class="custom-padding" :rules="rules" :model="user" ref="loginForm">
-                            <el-row>
-                                <el-col :span="6">
-                                    <div style="float: left; margin-top: 7px">Username:</div>
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-form-item prop="username">
-                                        <el-input v-model="user.username" required></el-input>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="6">
-                                    <div style="float: left; margin-top: 7px">Password:</div>
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-form-item prop="password">
-                                        <el-input v-model="user.password" type="password" required></el-input>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="24">
-                                    <el-button type="primary" @click="loginUser">
-                                        Login
-                                    </el-button>
-                                </el-col>
-                            </el-row>
-                        </el-form>
-                    </el-tab-pane>
-                    <el-tab-pane label="Register">
-                        <el-form label-width="120px" class="custom-padding" :rules="rules" :model="user" ref="registrationForm">
-                            <el-row>
-                                <el-col :span="6">
-                                    <div style="float: left; margin-top: 7px">Username:</div>
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-form-item prop="username">
-                                        <el-input v-model="user.username" required></el-input>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="6">
-                                    <div style="float: left; margin-top: 7px">Password:</div>
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-form-item prop="password">
-                                        <el-input v-model="user.password" type="password" required></el-input>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="6">
-                                    <div style="float: left; margin-top: 7px">Re Password:</div>
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-form-item prop="rePassword">
-                                        <el-input v-model="user.rePassword" type="password" required></el-input>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col>
-                                    <el-button type="primary" @click="registerUser">
-                                        Register
-                                    </el-button>
-                                </el-col>
-                            </el-row>
-                        </el-form>
-                    </el-tab-pane>
-                </el-tabs>
-            </el-col>
-            <el-col>
-                <h1 style="padding-top: 21px; font-family: 'Signika', sans-serif; font-size: 40px">
-                    Keep all your news in a single place. Simple and easy to read.
-                </h1>
-            </el-col>
-        </el-row>
+    <div style="width: 100%; min-height: 100%;" class="font-style">
+        <el-menu mode="horizontal" @select="handleSelect" :default-active="'dashboard'">
+            <el-menu-item index="logo" style="font-size: 30px" class="brand-logo">
+                profile
+            </el-menu-item>
+            <el-menu-item index="logout" style="float: right">Logout</el-menu-item>
+        </el-menu>
+        <br />
+        <transition name="fade">
+            <router-view @validation-failed="handleSelect"></router-view>
+        </transition>
+        <transition name="fade">
+            <i v-if="displayCaret" class="page-fixed-component el-icon-caret-top" onclick="window.scroll({ top: 0, left: 0, behavior: 'smooth' });"></i>
+        </transition>
     </div>
 </template>
 
 
 <script>
     import {
-        mapMutations
+        mapMutations,
+        mapGetters
     } from 'vuex';
-    import {
-        handleError,
-        displayMessage,
-        loginUser,
-        registerUser
-    } from './../api/api';
 
     export default {
         data() {
             return {
-                user: {
-                    username: '',
-                    password: '',
-                    rePassword: ''
-                },
-                rules: {
-                    username: [{
-                        required: true,
-                        message: 'Please enter the username',
-                        trigger: 'blur'
-                    },
-                    {
-                        min: 5,
-                        max: 20,
-                        message: 'Length should be between 5 and 20',
-                        trigger: 'change'
-                    }
-                    ],
-                    password: [{
-                        required: true,
-                        message: 'Please enter the password',
-                        trigger: 'blur'
-                    },
-                    {
-                        min: 8,
-                        message: 'Length should be 8 and greater',
-                        trigger: 'change'
-                    }
-                    ],
-                    rePassword: [{
-                        required: true,
-                        message: 'Please re-enter the password',
-                        trigger: 'blur'
-                    },
-                    {
-                        min: 8,
-                        message: 'Length should be 8 and greater',
-                        trigger: 'change'
-                    }
-                    ]
-                }
+                navigation: ['sources', 'favourites'],
+                displayCaret: false
             };
         },
+        created() {
+            window.document.addEventListener('scroll', this.handleScroll);
+        },
         mounted() {
-            window.document.title = 'News Weaver';
+            window.document.title = `${this.formatUsername()}'s profile`;
+        },
+        destroyed() {
+            window.document.addEventListener('scroll', this.handleScroll);
         },
         methods: {
             ...mapMutations([
-                'setUser'
+                'removeUser'
             ]),
-            loginUser() {
-                let username = this.user.username;
-                let password = this.user.password;
-
-                this.$refs.loginForm.validate((valid) => {
-                    if (valid) {
-                        loginUser({
-                            username: username,
-                            password: password
-                        })
-                            .then((data) => {
-                                if (data.success) {
-                                    this.setUser({
-                                        username: username,
-                                        token: data.token
-                                    });
-                                    this.$router.push({
-                                        path: 'dashboard/all/all_news'
-                                    });
-                                } else
-                                    handleError(null, data.message);
-                            });
-                    } else
-                        handleError(null, 'Form fields not valid');
-
-                });
-            },
-            registerUser() {
-                let username = this.user.username;
-                let password = this.user.password;
-                let rePassword = this.user.rePassword;
-
-                this.$refs.registrationForm.validate((valid) => {
-                    if (valid) {
-                        registerUser({
-                            username: username,
-                            password: password,
-                            rePassword: rePassword
-                        })
-                            .then((data) => {
-                                if (data.success)
-                                    displayMessage(`User registration successful.` +
-                                        ` Please login to continue...`);
-                                else
-                                    handleError(null, data.message);
-                            });
-                    } else
-                        handleError(null, 'Form fields not valid');
-                });
+            ...mapGetters([
+                'formatUsername'
+            ]),
+            handleSelect(key) {
+                switch (key) {
+                    case 'logout':
+                        this.removeUser();
+                        this.$router.push({
+                            path: '/'
+                        });
+                        break;
+                    default:
+                        this.$router.push({
+                            path: '/profiles'
+                        });
+                        break;
+                }
             }
         }
     };
 
 </script>
-
-
-<style scoped>
-    #logo-text {
-        border-bottom: 1px solid white;
-        border-right: 1px solid white;
-        position: relative;
-        padding: 14px;
-        display: inline-block;
-    }
-
-    #logo-text:after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 0 0 25px 25px;
-        border-color: transparent transparent white transparent;
-    }
-
-    .slide-line {
-        position: relative;
-    }
-
-    .slide-line:after {
-        position: absolute;
-        content: "";
-        width: 0%;
-        bottom: 0;
-        left: 0;
-        border-bottom: 2px dashed #fe4a49;
-        transition-duration: 0.5s;
-    }
-
-    .slide-line:hover:after {
-        width: 100%;
-    }
-</style>
