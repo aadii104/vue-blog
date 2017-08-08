@@ -1,30 +1,26 @@
 # zira
 
-> well not just an another vueJs project. ;) it's **Zira**
+> A vue blog app.
 
 ## Build Setup
 
 ``` bash
-# install dependencies
-npm install
+# how to  run ?
+git clone https://github.com/aadii104/zira.git
 
-# serve with hot reload at localhost:8080
-npm run dev
+#open terminal 1.
+Run mongodb, follow any tutorials or video.( follow this if you are on windows, else skip.)
 
-# build for production with minification
-npm run build
+#open terminal 2.
 
-# build for production and view the bundle analyzer report
-npm run build --report
+>cd client
+>npm install
+> npm run dev
 
-# run unit tests
-npm run unit
+#open terminal 3.
+> cd server
+> npm install
+> npm run dev 
 
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+#open browser
+redirect to http://localhost:8080
